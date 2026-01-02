@@ -5,20 +5,18 @@ import 'package:google_fonts/google_fonts.dart';
 class HeroSection extends StatefulWidget {
   final GlobalKey pricingSectionKey;
 
-  const HeroSection({
-    super.key,
-    required this.pricingSectionKey,
-  });
+  const HeroSection({super.key, required this.pricingSectionKey});
 
   @override
   State<HeroSection> createState() => _HeroSectionState();
 }
 
 class _HeroSectionState extends State<HeroSection>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   double _sliderValue = 70.0;
   bool _isDragging = false;
   late AnimationController _shimmerController;
+  late AnimationController _tapAnimationController;
 
   @override
   void initState() {
@@ -27,11 +25,17 @@ class _HeroSectionState extends State<HeroSection>
       vsync: this,
       duration: const Duration(seconds: 8),
     )..repeat();
+
+    _tapAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 
   @override
   void dispose() {
     _shimmerController.dispose();
+    _tapAnimationController.dispose();
     super.dispose();
   }
 
@@ -44,6 +48,40 @@ class _HeroSectionState extends State<HeroSection>
         curve: Curves.easeInOut,
       );
     }
+  }
+
+  void _handleTap(double maxWidth) {
+    if (_isDragging || _tapAnimationController.isAnimating) return;
+
+    final startValue = _sliderValue;
+    final endValue = maxWidth;
+
+    final animation = Tween<double>(begin: startValue, end: endValue).animate(
+      CurvedAnimation(parent: _tapAnimationController, curve: Curves.easeOut),
+    );
+
+    animation.addListener(() {
+      setState(() {
+        _sliderValue = animation.value;
+      });
+    });
+
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _scrollToPricingSection();
+        // Reset after a delay
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            setState(() {
+              _sliderValue = 70.0;
+            });
+            _tapAnimationController.reset();
+          }
+        });
+      }
+    });
+
+    _tapAnimationController.forward();
   }
 
   @override
@@ -86,10 +124,7 @@ class _HeroSectionState extends State<HeroSection>
         color: Colors.grey.withOpacity(0.374),
         borderRadius: BorderRadius.circular(50),
         boxShadow: [
-          BoxShadow(
-            color: Colors.white.withOpacity(0.3),
-            blurRadius: 8,
-          ),
+          BoxShadow(color: Colors.white.withOpacity(0.3), blurRadius: 8),
         ],
       ),
       child: Row(
@@ -209,6 +244,7 @@ class _HeroSectionState extends State<HeroSection>
 
   Widget _buildSliderButton(double maxWidth) {
     return GestureDetector(
+      onTap: () => _handleTap(maxWidth),
       onHorizontalDragUpdate: (details) {
         setState(() {
           _isDragging = true;
@@ -245,9 +281,10 @@ class _HeroSectionState extends State<HeroSection>
           children: [
             // Green sliding background
             AnimatedContainer(
-              duration: _isDragging
-                  ? Duration.zero
-                  : const Duration(milliseconds: 300),
+              duration:
+                  _isDragging
+                      ? Duration.zero
+                      : const Duration(milliseconds: 300),
               width: _sliderValue,
               height: 60,
               decoration: BoxDecoration(
@@ -295,29 +332,54 @@ class _HeroSectionState extends State<HeroSection>
 class DottedChevronPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill;
 
     final dotSize = 2.5;
 
     // Center dot
-    canvas.drawCircle(Offset(size.width * 0.4, size.height * 0.5), dotSize, paint);
+    canvas.drawCircle(
+      Offset(size.width * 0.4, size.height * 0.5),
+      dotSize,
+      paint,
+    );
 
     // Tip (rightmost)
-    canvas.drawCircle(Offset(size.width * 0.8, size.height * 0.5), dotSize, paint);
+    canvas.drawCircle(
+      Offset(size.width * 0.8, size.height * 0.5),
+      dotSize,
+      paint,
+    );
 
     // Upper diagonal
-    canvas.drawCircle(Offset(size.width * 0.6, size.height * 0.3), dotSize, paint);
+    canvas.drawCircle(
+      Offset(size.width * 0.6, size.height * 0.3),
+      dotSize,
+      paint,
+    );
 
     // Lower diagonal
-    canvas.drawCircle(Offset(size.width * 0.6, size.height * 0.7), dotSize, paint);
+    canvas.drawCircle(
+      Offset(size.width * 0.6, size.height * 0.7),
+      dotSize,
+      paint,
+    );
 
     // Upper back
-    canvas.drawCircle(Offset(size.width * 0.4, size.height * 0.2), dotSize, paint);
+    canvas.drawCircle(
+      Offset(size.width * 0.4, size.height * 0.2),
+      dotSize,
+      paint,
+    );
 
     // Lower back
-    canvas.drawCircle(Offset(size.width * 0.4, size.height * 0.8), dotSize, paint);
+    canvas.drawCircle(
+      Offset(size.width * 0.4, size.height * 0.8),
+      dotSize,
+      paint,
+    );
   }
 
   @override
