@@ -9,25 +9,8 @@ class CustomNavigationBar extends StatefulWidget {
   State<CustomNavigationBar> createState() => _CustomNavigationBarState();
 }
 
-class _CustomNavigationBarState extends State<CustomNavigationBar>
-    with SingleTickerProviderStateMixin {
+class _CustomNavigationBarState extends State<CustomNavigationBar> {
   bool _isMobileMenuOpen = false;
-  late AnimationController _pulseController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +24,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          bottom: BorderSide(
-            color: Colors.black.withOpacity(0.1),
-            width: 1,
-          ),
+          bottom: BorderSide(color: Colors.black.withOpacity(0.1), width: 1),
         ),
       ),
       child: Row(
@@ -71,29 +51,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 children: [
                   Row(
                     children: [
-                      // Animated red dot
-                      AnimatedBuilder(
-                        animation: _pulseController,
-                        builder: (context, child) {
-                          return Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF44336),
-                              borderRadius: BorderRadius.circular(4),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFFF44336).withOpacity(
-                                      0.7 - (_pulseController.value * 0.7)),
-                                  blurRadius: 10 * _pulseController.value,
-                                  spreadRadius: 5 * _pulseController.value,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(width: 5),
                       const Text(
                         'Scalp.tamizhan',
                         style: TextStyle(
@@ -120,7 +77,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 _buildNavLink('About Us', () => widget.onNavigate('about')),
                 const SizedBox(width: 40),
                 _buildNavLink(
-                    'Testimonials', () => widget.onNavigate('testimonials')),
+                  'Testimonials',
+                  () => widget.onNavigate('testimonials'),
+                ),
                 const SizedBox(width: 40),
                 _buildNavLink('FAQ', () => widget.onNavigate('faq')),
               ],
