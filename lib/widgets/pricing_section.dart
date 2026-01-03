@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../screens/login_screen.dart';
 
 class PricingSection extends StatefulWidget {
   const PricingSection({Key? key}) : super(key: key);
@@ -68,14 +70,16 @@ class _PricingSectionState extends State<PricingSection>
       child: Container(
         color: Colors.transparent,
         padding: EdgeInsets.symmetric(
-          horizontal: screenWidth > 1200
-              ? 80
-              : screenWidth > 768
+          horizontal:
+              screenWidth > 1200
+                  ? 80
+                  : screenWidth > 768
                   ? 40
                   : 20,
-          vertical: screenWidth > 1200
-              ? 80
-              : screenWidth > 768
+          vertical:
+              screenWidth > 1200
+                  ? 80
+                  : screenWidth > 768
                   ? 60
                   : 40,
         ),
@@ -83,9 +87,10 @@ class _PricingSectionState extends State<PricingSection>
           children: [
             _buildHeader(),
             SizedBox(
-              height: screenWidth > 1200
-                  ? 60
-                  : screenWidth > 768
+              height:
+                  screenWidth > 1200
+                      ? 60
+                      : screenWidth > 768
                       ? 48
                       : 32,
             ),
@@ -98,14 +103,16 @@ class _PricingSectionState extends State<PricingSection>
 
   Widget _buildHeader() {
     final screenWidth = MediaQuery.of(context).size.width;
-    final titleFontSize = screenWidth > 1200
-        ? 48.0
-        : screenWidth > 768
+    final titleFontSize =
+        screenWidth > 1200
+            ? 48.0
+            : screenWidth > 768
             ? 36.0
             : 28.0;
-    final subtitleFontSize = screenWidth > 1200
-        ? 16.0
-        : screenWidth > 768
+    final subtitleFontSize =
+        screenWidth > 1200
+            ? 16.0
+            : screenWidth > 768
             ? 14.0
             : 12.0;
 
@@ -158,9 +165,10 @@ class _PricingSectionState extends State<PricingSection>
 
   Widget _buildDesktopCards() {
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardSpacing = screenWidth > 1400
-        ? 32.0
-        : screenWidth > 1200
+    final cardSpacing =
+        screenWidth > 1400
+            ? 32.0
+            : screenWidth > 1200
             ? 28.0
             : 24.0;
 
@@ -314,9 +322,10 @@ class _PricingSectionState extends State<PricingSection>
     }
 
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = screenWidth > 1400
-        ? 320.0 // Reduced from 350
-        : screenWidth > 1200
+    final cardWidth =
+        screenWidth > 1400
+            ? 320.0 // Reduced from 350
+            : screenWidth > 1200
             ? 300.0 // Reduced from 320
             : 280.0; // Reduced from 300
 
@@ -344,14 +353,23 @@ class _PricingSectionState extends State<PricingSection>
                 decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.circular(24),
-                  border: isPopular
-                      ? Border.all(color: Colors.white.withOpacity(0.3), width: 4)
-                      : null,
+                  border:
+                      isPopular
+                          ? Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 4,
+                          )
+                          : null,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3 + _hoverControllers[index].value * 0.2),
+                      color: Colors.black.withOpacity(
+                        0.3 + _hoverControllers[index].value * 0.2,
+                      ),
                       blurRadius: 20 + _hoverControllers[index].value * 10,
-                      offset: Offset(0, 10 + _hoverControllers[index].value * 5),
+                      offset: Offset(
+                        0,
+                        10 + _hoverControllers[index].value * 5,
+                      ),
                     ),
                   ],
                 ),
@@ -439,7 +457,11 @@ class _PricingSectionState extends State<PricingSection>
                                     color: Colors.white.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: Icon(icon, color: Colors.white, size: 20),
+                                  child: Icon(
+                                    icon,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
                                 )
                               else if (iconText != null)
                                 Container(
@@ -575,7 +597,26 @@ class _PricingSectionState extends State<PricingSection>
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            final session = Supabase.instance.client.auth.currentSession;
+            if (session == null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            } else {
+              // User is logged in, proceed with purchase logic (leave it for now)
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Proceeding to payment...',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  backgroundColor: Color(0xFFCDFF00),
+                ),
+              );
+            }
+          },
           borderRadius: BorderRadius.circular(30),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),

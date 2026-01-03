@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/home_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://hqosvrayudkgyocemgtt.supabase.co',
+    anonKey: 'sb_publishable_vVefdCCOUXkfycwXE6RjDQ_sTVaCAiK',
+  );
   runApp(const ScalpTamizhanApp());
 }
 

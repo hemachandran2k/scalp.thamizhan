@@ -257,33 +257,31 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
       builder: (context, child) {
         return Transform.translate(
           offset: Offset(0, 40 * (1 - _cardControllers[index].value)),
-          child: Opacity(
-            opacity: _cardControllers[index].value,
-            child: card,
-          ),
+          child: Opacity(opacity: _cardControllers[index].value, child: card),
         );
       },
     );
   }
 
   Widget _buildPerformanceCard() {
-    const whatsappGreen = Color(0xFF25D366);
-    const whatsappGreenLight = Color(0xFF3FE67C);
-    const whatsappGreenDark = Color(0xFF1EBE5A);
+    const pricingGreen = Color(0xFF2E7D32);
+    const pricingGreenLight = Color(
+      0xFF43A047,
+    ); // A slightly lighter shade for gradient
 
     return Container(
-      constraints: const BoxConstraints(maxWidth: 380),
-      height: 440,
+      constraints: const BoxConstraints(maxWidth: 220),
+      height: 500,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [whatsappGreenLight, whatsappGreen],
+          colors: [pricingGreenLight, pricingGreen],
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: whatsappGreen.withOpacity(0.3),
+            color: pricingGreen.withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -300,15 +298,15 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                _buildAnimatedBar(0, 0.6, whatsappGreenDark),
+                _buildAnimatedBar(0, 0.6, pricingGreen),
                 const SizedBox(width: 8),
-                _buildAnimatedBar(1, 0.8, whatsappGreenDark),
+                _buildAnimatedBar(1, 0.8, pricingGreen),
                 const SizedBox(width: 8),
-                _buildAnimatedBar(2, 0.5, whatsappGreenDark),
+                _buildAnimatedBar(2, 0.5, pricingGreen),
                 const SizedBox(width: 8),
                 _buildAnimatedBar(3, 1.0, const Color(0xFF128C7E)),
                 const SizedBox(width: 8),
-                _buildAnimatedBar(4, 0.7, whatsappGreenDark),
+                _buildAnimatedBar(4, 0.7, pricingGreen),
               ],
             ),
           ),
@@ -317,7 +315,10 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
           Align(
             alignment: Alignment.topRight,
             child: AnimatedBuilder(
-              animation: Listenable.merge([_pulseController, _rotateController]),
+              animation: Listenable.merge([
+                _pulseController,
+                _rotateController,
+              ]),
               builder: (context, child) {
                 return Transform.scale(
                   scale: 1.0 + (_pulseController.value * 0.15),
@@ -330,7 +331,9 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.amber.withOpacity(0.5 + _pulseController.value * 0.3),
+                            color: Colors.amber.withOpacity(
+                              0.5 + _pulseController.value * 0.3,
+                            ),
                             blurRadius: 12 + (_pulseController.value * 8),
                             spreadRadius: 2,
                           ),
@@ -352,7 +355,7 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
           Container(
             padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
-              color: whatsappGreenDark.withOpacity(0.5),
+              color: pricingGreen.withOpacity(0.5),
               borderRadius: BorderRadius.circular(18),
             ),
             child: Column(
@@ -397,17 +400,22 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
 
   Widget _buildAnimatedBar(int index, double heightFactor, Color color) {
     return AnimatedBuilder(
-      animation: Listenable.merge([_barControllers[index], _leaderboardController]),
+      animation: Listenable.merge([
+        _barControllers[index],
+        _leaderboardController,
+      ]),
       builder: (context, child) {
         // Continuous growing and shrinking animation
-        final dynamicHeight = heightFactor + (_barControllers[index].value * 0.2);
+        final dynamicHeight =
+            heightFactor + (_barControllers[index].value * 0.2);
         final barHeight = 100.0 * dynamicHeight;
-        
+
         // Continuous bouncing for winner bar
-        final bounceOffset = index == 3 
-            ? 8 * (0.5 - (_leaderboardController.value - 0.5).abs())
-            : 0.0;
-        
+        final bounceOffset =
+            index == 3
+                ? 8 * (0.5 - (_leaderboardController.value - 0.5).abs())
+                : 0.0;
+
         return Transform.translate(
           offset: Offset(0, bounceOffset),
           child: Column(
@@ -419,45 +427,48 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
                 decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.circular(8),
-                  boxShadow: index == 3
-                      ? [
-                          BoxShadow(
-                            color: color.withOpacity(0.6),
-                            blurRadius: 8 + (_leaderboardController.value * 4),
-                            spreadRadius: 1,
-                          ),
-                        ]
-                      : null,
+                  boxShadow:
+                      index == 3
+                          ? [
+                            BoxShadow(
+                              color: color.withOpacity(0.6),
+                              blurRadius:
+                                  8 + (_leaderboardController.value * 4),
+                              spreadRadius: 1,
+                            ),
+                          ]
+                          : null,
                 ),
-                child: barHeight > 20
-                    ? Align(
-                        alignment: Alignment.topCenter,
-                        child: AnimatedBuilder(
-                          animation: _pulseController,
-                          builder: (context, child) {
-                            return Transform.scale(
-                              scale: 1.0 + (_pulseController.value * 0.2),
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 6),
-                                padding: const EdgeInsets.all(3),
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
+                child:
+                    barHeight > 20
+                        ? Align(
+                          alignment: Alignment.topCenter,
+                          child: AnimatedBuilder(
+                            animation: _pulseController,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: 1.0 + (_pulseController.value * 0.2),
                                 child: Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    color: color,
+                                  margin: const EdgeInsets.only(top: 6),
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
                                     shape: BoxShape.circle,
                                   ),
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: color,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    : null,
+                              );
+                            },
+                          ),
+                        )
+                        : null,
               ),
               const SizedBox(height: 4),
               Container(
@@ -476,22 +487,22 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
   }
 
   Widget _buildGuidanceCard() {
-    const whatsappGreen = Color(0xFF25D366);
-    const whatsappGreenLight = Color(0xFF3FE67C);
+    const pricingGreen = Color(0xFF2E7D32);
+    const pricingGreenLight = Color(0xFF43A047);
 
     return Container(
-      constraints: const BoxConstraints(maxWidth: 380),
-      height: 440,
+      constraints: const BoxConstraints(maxWidth: 220),
+      height: 500,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [whatsappGreenLight, whatsappGreen],
+          colors: [pricingGreenLight, pricingGreen],
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: whatsappGreen.withOpacity(0.3),
+            color: pricingGreen.withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -539,7 +550,9 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFFB300).withOpacity(0.3 + _pulseController.value * 0.2),
+                        color: const Color(
+                          0xFFFFB300,
+                        ).withOpacity(0.3 + _pulseController.value * 0.2),
                         blurRadius: 12 + (_pulseController.value * 8),
                       ),
                     ],
@@ -629,9 +642,11 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
           animatedProgress = 1.0;
         } else {
           // Creates a wave effect that repeats
-          animatedProgress = baseProgress + ((1 - baseProgress) * _progressController.value * 0.3);
+          animatedProgress =
+              baseProgress +
+              ((1 - baseProgress) * _progressController.value * 0.3);
         }
-        
+
         return Row(
           children: [
             AnimatedBuilder(
@@ -647,27 +662,30 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: color.withOpacity(0.4 + _pulseController.value * 0.3),
+                          color: color.withOpacity(
+                            0.4 + _pulseController.value * 0.3,
+                          ),
                           blurRadius: 8 + (_pulseController.value * 6),
                           spreadRadius: 1,
                         ),
                       ],
                     ),
                     child: Center(
-                      child: isComplete
-                          ? const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                              size: 24,
-                            )
-                          : Text(
-                              number,
-                              style: const TextStyle(
+                      child:
+                          isComplete
+                              ? const Icon(
+                                Icons.check,
                                 color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
+                                size: 24,
+                              )
+                              : Text(
+                                number,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
-                            ),
                     ),
                   ),
                 );
@@ -724,22 +742,22 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
   }
 
   Widget _buildHolisticCard() {
-    const whatsappGreen = Color(0xFF25D366);
-    const whatsappGreenLight = Color(0xFF3FE67C);
+    const pricingGreen = Color(0xFF2E7D32);
+    const pricingGreenLight = Color(0xFF43A047);
 
     return Container(
-      constraints: const BoxConstraints(maxWidth: 380),
-      height: 440,
+      constraints: const BoxConstraints(maxWidth: 220),
+      height: 500,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [whatsappGreenLight, whatsappGreen],
+          colors: [pricingGreenLight, pricingGreen],
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: whatsappGreen.withOpacity(0.3),
+            color: pricingGreen.withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -780,8 +798,10 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
             builder: (context, child) {
               // Continuous counting animation
               final baseProgress = 0.85;
-              final progress = baseProgress - (baseProgress * 0.15 * (1 - _progressController.value));
-              
+              final progress =
+                  baseProgress -
+                  (baseProgress * 0.15 * (1 - _progressController.value));
+
               return AnimatedBuilder(
                 animation: _pulseController,
                 builder: (context, child) {
@@ -794,7 +814,9 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
                         borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF25D366).withOpacity(0.2 + _pulseController.value * 0.15),
+                            color: const Color(
+                              0xFF2E7D32,
+                            ).withOpacity(0.2 + _pulseController.value * 0.15),
                             blurRadius: 12 + (_pulseController.value * 6),
                           ),
                         ],
@@ -839,12 +861,17 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
                                   height: 12,
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
-                                      colors: [Color(0xFF25D366), Color(0xFF128C7E)],
+                                      colors: [
+                                        Color(0xFF25D366),
+                                        Color(0xFF128C7E),
+                                      ],
                                     ),
                                     borderRadius: BorderRadius.circular(6),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFF25D366).withOpacity(0.5),
+                                        color: const Color(
+                                          0xFF25D366,
+                                        ).withOpacity(0.5),
                                         blurRadius: 6,
                                       ),
                                     ],
@@ -875,7 +902,9 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFFB300).withOpacity(0.3 + _pulseController.value * 0.2),
+                        color: const Color(
+                          0xFFFFB300,
+                        ).withOpacity(0.3 + _pulseController.value * 0.2),
                         blurRadius: 12 + (_pulseController.value * 8),
                       ),
                     ],
@@ -966,17 +995,10 @@ class _DifferentiatorsSectionState extends State<DifferentiatorsSection>
                 color: color,
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(
-                    color: color.withOpacity(0.4),
-                    blurRadius: 8,
-                  ),
+                  BoxShadow(color: color.withOpacity(0.4), blurRadius: 8),
                 ],
               ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 26,
-              ),
+              child: Icon(icon, color: Colors.white, size: 26),
             ),
             const SizedBox(height: 8),
             Text(

@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 class ParticleNetworkBackground extends StatefulWidget {
+  const ParticleNetworkBackground({super.key});
+
   @override
   _ParticleNetworkBackgroundState createState() =>
       _ParticleNetworkBackgroundState();
@@ -41,14 +43,16 @@ class _ParticleNetworkBackgroundState extends State<ParticleNetworkBackground>
     if (particles.isEmpty) {
       final random = math.Random();
       for (int i = 0; i < particleCount; i++) {
-        particles.add(Particle(
-          x: random.nextDouble() * size.width,
-          y: random.nextDouble() * size.height,
-          vx: (random.nextDouble() - 0.5) * 0.5,
-          vy: (random.nextDouble() - 0.5) * 0.5,
-          size: random.nextDouble() * 3 + 1,
-          opacity: random.nextDouble() * 0.8 + 0.2,
-        ));
+        particles.add(
+          Particle(
+            x: random.nextDouble() * size.width,
+            y: random.nextDouble() * size.height,
+            vx: (random.nextDouble() - 0.5) * 0.5,
+            vy: (random.nextDouble() - 0.5) * 0.5,
+            size: random.nextDouble() * 3 + 1,
+            opacity: random.nextDouble() * 0.8 + 0.2,
+          ),
+        );
       }
     }
   }
@@ -144,9 +148,10 @@ class ParticleNetworkPainter extends CustomPainter {
   }
 
   void _drawConnections(Canvas canvas) {
-    final connectionPaint = Paint()
-      ..strokeWidth = 0.8
-      ..style = PaintingStyle.stroke;
+    final connectionPaint =
+        Paint()
+          ..strokeWidth = 0.8
+          ..style = PaintingStyle.stroke;
 
     for (int i = 0; i < particles.length; i++) {
       for (int j = i + 1; j < particles.length; j++) {
@@ -188,9 +193,10 @@ class ParticleNetworkPainter extends CustomPainter {
   void _drawParticles(Canvas canvas) {
     for (var particle in particles) {
       // Outer glow
-      final glowPaint = Paint()
-        ..color = Color(0xFF00FFB3).withOpacity(particle.opacity * 0.3)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, particle.size * 2);
+      final glowPaint =
+          Paint()
+            ..color = Color(0xFF00FFB3).withOpacity(particle.opacity * 0.3)
+            ..maskFilter = MaskFilter.blur(BlurStyle.normal, particle.size * 2);
 
       canvas.drawCircle(
         Offset(particle.x, particle.y),
@@ -199,20 +205,21 @@ class ParticleNetworkPainter extends CustomPainter {
       );
 
       // Main particle with gradient
-      final particlePaint = Paint()
-        ..shader = RadialGradient(
-          colors: [
-            Color(0xFF00FFB3).withOpacity(particle.opacity),
-            Color(0xFF14F195).withOpacity(particle.opacity * 0.8),
-            Color(0xFF00D4FF).withOpacity(particle.opacity * 0.6),
-          ],
-          stops: [0.0, 0.7, 1.0],
-        ).createShader(
-          Rect.fromCircle(
-            center: Offset(particle.x, particle.y),
-            radius: particle.size,
-          ),
-        );
+      final particlePaint =
+          Paint()
+            ..shader = RadialGradient(
+              colors: [
+                Color(0xFF00FFB3).withOpacity(particle.opacity),
+                Color(0xFF14F195).withOpacity(particle.opacity * 0.8),
+                Color(0xFF00D4FF).withOpacity(particle.opacity * 0.6),
+              ],
+              stops: [0.0, 0.7, 1.0],
+            ).createShader(
+              Rect.fromCircle(
+                center: Offset(particle.x, particle.y),
+                radius: particle.size,
+              ),
+            );
 
       canvas.drawCircle(
         Offset(particle.x, particle.y),
@@ -221,8 +228,9 @@ class ParticleNetworkPainter extends CustomPainter {
       );
 
       // Inner bright core
-      final corePaint = Paint()
-        ..color = Color(0xFFFFFFFF).withOpacity(particle.opacity * 0.9);
+      final corePaint =
+          Paint()
+            ..color = Color(0xFFFFFFFF).withOpacity(particle.opacity * 0.9);
 
       canvas.drawCircle(
         Offset(particle.x, particle.y),
@@ -296,14 +304,16 @@ class _CustomizableParticleNetworkState
     if (particles.isEmpty) {
       final random = math.Random();
       for (int i = 0; i < widget.particleCount; i++) {
-        particles.add(Particle(
-          x: random.nextDouble() * size.width,
-          y: random.nextDouble() * size.height,
-          vx: (random.nextDouble() - 0.5) * widget.particleSpeed,
-          vy: (random.nextDouble() - 0.5) * widget.particleSpeed,
-          size: random.nextDouble() * widget.maxParticleSize + 1,
-          opacity: random.nextDouble() * 0.8 + 0.2,
-        ));
+        particles.add(
+          Particle(
+            x: random.nextDouble() * size.width,
+            y: random.nextDouble() * size.height,
+            vx: (random.nextDouble() - 0.5) * widget.particleSpeed,
+            vy: (random.nextDouble() - 0.5) * widget.particleSpeed,
+            size: random.nextDouble() * widget.maxParticleSize + 1,
+            opacity: random.nextDouble() * 0.8 + 0.2,
+          ),
+        );
       }
     }
   }
@@ -339,10 +349,7 @@ class _CustomizableParticleNetworkState
         gradient: RadialGradient(
           center: Alignment.center,
           radius: 1.2,
-          colors: [
-            Color(0xFF0A1A2A),
-            Color(0xFF051015),
-          ],
+          colors: [Color(0xFF0A1A2A), Color(0xFF051015)],
         ),
       ),
       child: CustomPaint(
@@ -375,9 +382,10 @@ class CustomizableParticleNetworkPainter extends CustomPainter {
   }
 
   void _drawConnections(Canvas canvas) {
-    final connectionPaint = Paint()
-      ..strokeWidth = 0.8
-      ..style = PaintingStyle.stroke;
+    final connectionPaint =
+        Paint()
+          ..strokeWidth = 0.8
+          ..style = PaintingStyle.stroke;
 
     for (int i = 0; i < particles.length; i++) {
       for (int j = i + 1; j < particles.length; j++) {
@@ -413,9 +421,10 @@ class CustomizableParticleNetworkPainter extends CustomPainter {
   void _drawParticles(Canvas canvas) {
     for (var particle in particles) {
       // Glow effect
-      final glowPaint = Paint()
-        ..color = colors[0].withOpacity(particle.opacity * 0.3)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, particle.size * 2);
+      final glowPaint =
+          Paint()
+            ..color = colors[0].withOpacity(particle.opacity * 0.3)
+            ..maskFilter = MaskFilter.blur(BlurStyle.normal, particle.size * 2);
 
       canvas.drawCircle(
         Offset(particle.x, particle.y),
@@ -424,17 +433,19 @@ class CustomizableParticleNetworkPainter extends CustomPainter {
       );
 
       // Main particle
-      final particlePaint = Paint()
-        ..shader = RadialGradient(
-          colors: colors
-              .map((color) => color.withOpacity(particle.opacity))
-              .toList(),
-        ).createShader(
-          Rect.fromCircle(
-            center: Offset(particle.x, particle.y),
-            radius: particle.size,
-          ),
-        );
+      final particlePaint =
+          Paint()
+            ..shader = RadialGradient(
+              colors:
+                  colors
+                      .map((color) => color.withOpacity(particle.opacity))
+                      .toList(),
+            ).createShader(
+              Rect.fromCircle(
+                center: Offset(particle.x, particle.y),
+                radius: particle.size,
+              ),
+            );
 
       canvas.drawCircle(
         Offset(particle.x, particle.y),
@@ -443,8 +454,8 @@ class CustomizableParticleNetworkPainter extends CustomPainter {
       );
 
       // Core
-      final corePaint = Paint()
-        ..color = Colors.white.withOpacity(particle.opacity * 0.9);
+      final corePaint =
+          Paint()..color = Colors.white.withOpacity(particle.opacity * 0.9);
 
       canvas.drawCircle(
         Offset(particle.x, particle.y),
